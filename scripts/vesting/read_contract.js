@@ -43,22 +43,22 @@ contract.methods.getToken().call((err, result) => {
 
             console.log("")
             console.log("==============================================================")
-            console.log("Token Vesting at index " + i)
+            console.log("Token Vesting at index " + "["+i+"]")
             console.log("==============================================================")
             console.log("")
             
-            console.log("Vesting releasable amount: " + releasableAmount[i] + " DOGZ")
-            console.log("Beneficiary: ",result[0])
+            console.log("["+i+"] " + "Vesting releasable amount: " + releasableAmount[i] + " DOGZ")
+            console.log("["+i+"] " + "Beneficiary: ",result[0])
 
             let initialTime = new Date( result[1] * 1000);
-            console.log("Initial vesting period: ", initialTime.toLocaleString())
+            console.log("["+i+"] " + "Initial vesting period: ", initialTime.toLocaleString())
 
-            console.log("Vesting duration: ", result[3]/(30*24*3600) + " Months")
-            console.log("Time between each release: ", result[4]/(30*24*3600) + " Months")
-            console.log("Revocable: ", result[5])
-            console.log("Total amount: "+ result[6]/1e18 + " DOGZ")
-            console.log("Released: "+ result[7]/1e18 + " DOGZ")
-            console.log("Revoked: ", result[8])
+            console.log("["+i+"] " + "Vesting duration: ", result[3]/(30*24*3600) + " Months")
+            console.log("["+i+"] " + "Time between each release: ", result[4]/(30*24*3600) + " Months")
+            console.log("["+i+"] " + "Revocable: ", result[5])
+            console.log("["+i+"] " + "Total amount: "+ result[6]/1e18 + " DOGZ")
+            console.log("["+i+"] " + "Released: "+ result[7]/1e18 + " DOGZ")
+            console.log("["+i+"] " + "Revoked: ", result[8])
 
           })
         })
