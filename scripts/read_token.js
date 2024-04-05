@@ -8,11 +8,11 @@ const address = '0x7b292f1ea85155edc2fe9703e938d569ded33db2' // DogZilla Smart C
 const contract = new web3.eth.Contract(abi, address)
 
 contract.methods.totalSupply().call((err, result) => { 
-    console.log("Total Supply:", result/10e18, "DogZilla (wei)") 
+    console.log("Total Supply:", result/1e18, "DogZilla (wei)") 
 })
 
 contract.methods.maxSupply().call((err, result) => { 
-    console.log("Max Supply:", result/10e18, "DogZilla (wei)") 
+    console.log("Max Supply:", result/1e18, "DogZilla (wei)") 
 })
 
 contract.methods.name().call((err, result) => {
@@ -24,5 +24,5 @@ contract.methods.symbol().call((err, result) => {
 })
 
 contract.methods.balanceOf('0x3B00Ea9d686eaA0668a1e4222C1BF6995c9ac3FA').call((err, result) => {
-    console.log("Balance of DogZilla in mint wallet:", result/10e18, "DogZilla (wei)")
+    console.log("Balance of DogZilla in mint wallet:", result/1e18, "DogZilla (wei)")
 })
