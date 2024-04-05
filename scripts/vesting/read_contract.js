@@ -14,6 +14,7 @@ console.log("==============================================================")
 console.log("")
 
 
+let releasableAmount = []
 
 contract.methods.getToken().call((err, result) => { 
   console.log("Associated token address:", result) 
@@ -28,21 +29,25 @@ contract.methods.getToken().call((err, result) => {
   
       for (let i = 0; i < vestingCount; i++) {
 
-        console.log("")
-        console.log("==============================================================")
-        console.log("Token Vesting at index " + i)
-        console.log("==============================================================")
-        console.log("")
+        
         contract.methods.getVestingIdAtIndex(i).call((err, result) => {
-          console.log("Vesting ID:", result)
+          console.log("["+i+"] " + "Vesting ID:", result)
 
           contract.methods.computeReleasableAmount(result).call((err, result) => {
-            console.log("Vesting releasable amount: " + result/1e18 + " DOGZ")
+          
+            releasableAmount[i] = result/1e18
           })
 
           contract.methods.getVestingSchedule(result).call((err, result) => {
             //console.log("Vesting schedule: ",result)
 
+            console.log("")
+            console.log("==============================================================")
+            console.log("Token Vesting at index " + i)
+            console.log("==============================================================")
+            console.log("")
+            
+            console.log("Vesting releasable amount: " + releasableAmount[i] + " DOGZ")
             console.log("Beneficiary: ",result[0])
 
             let initialTime = new Date( result[1] * 1000);
