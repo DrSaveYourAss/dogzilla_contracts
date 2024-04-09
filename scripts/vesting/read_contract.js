@@ -8,61 +8,66 @@ const address = '0x5c0f2de5a4fa0d61dbb351cdf9cb941119927fd6' // Vesting smart co
 const contract = new web3.eth.Contract(abi, address)
 
 console.log("")
-console.log("==============================================================")
+console.log("==========================================================================")
 console.log("Token Vesting contract")
-console.log("==============================================================")
+console.log("==========================================================================")
 console.log("")
 
 
-let releasableAmount = []
+const tokenAddr = contract.methods.getToken().call((err, result) => { 
+  return result;
+});
+const vestTotal = contract.methods.getVestingSchedulesTotalAmount().call((err, result) => { 
+  return result;
+});
+const vestCount = contract.methods.getVestingSchedulesCount().call((err, result) => { 
+  return result;
+});
 
-contract.methods.getToken().call((err, result) => { 
-  console.log("Associated token address:", result) 
-  
-  contract.methods.getVestingSchedulesTotalAmount().call((err, result) => { 
-    console.log("Vesting total amount: " + result/1e18 + " DOGZ") 
+function vestID(i) {
+  contract.methods.getVestingIdAtIndex(i).call((err, result) => {
+    return result;
+  });
+}
 
-    contract.methods.getVestingSchedulesCount().call((err, result) => { 
-      // Vesting count
-      let vestingCount = result
-      console.log("Vesting count:",result) 
-  
-      for (let i = 0; i < vestingCount; i++) {
+const devWallet = [   "Core Team Wallet",
+                      "Marketing Wallet",
+                      "DEX Liquidity Pool Wallet"
+                  ];  
 
-        
-        contract.methods.getVestingIdAtIndex(i).call((err, result) => {
-          console.log("["+i+"] " + "Vesting ID:", result)
+const readVestingContract = async () => {
+  const token = await tokenAddr;
+  const total = await vestTotal;
+  const count = await vestCount;
 
-          contract.methods.computeReleasableAmount(result).call((err, result) => {
-          
-            releasableAmount[i] = result/1e18
-          })
+  console.log("Associated token address:", token);
+  console.log("Vesting total amount: " + total/1e18 + " DOGZ");
+  console.log("Vesting count:",count);
 
-          contract.methods.getVestingSchedule(result).call((err, result) => {
-            //console.log("Vesting schedule: ",result)
+  for (let i = 0; i < count; i++) {
+    
+    const id         = await contract.methods.getVestingIdAtIndex(i).call((err, result) => {return result;});
+    const releasable = await contract.methods.computeReleasableAmount(id).call((err, result) => {return result;});
+    const schedule   = await contract.methods.getVestingSchedule(id).call((err, result) => { return result });
+    let initialTime  = new Date( schedule[1] * 1000);
 
-            console.log("")
-            console.log("==============================================================")
-            console.log("Token Vesting at index " + "["+i+"]")
-            console.log("==============================================================")
-            console.log("")
-            
-            console.log("["+i+"] " + "Vesting releasable amount: " + releasableAmount[i] + " DOGZ")
-            console.log("["+i+"] " + "Beneficiary: ",result[0])
+    console.log("")
+    console.log("==========================================================================")
+    console.log("Token Vesting at index " + "["+i+"]: "+ devWallet[i])
+    console.log("==========================================================================")
+    console.log("")
+    console.log("Vesting ID:", id);
+    console.log("Vesting releasable amount: " + releasable/1e18+ " DOGZ");
+    console.log("Beneficiary: ",schedule[0]);
+    console.log("Initial vesting period: ", initialTime.toLocaleString());
+    console.log("Vesting duration: ", schedule[3]/(30*24*3600) + " Months");
+    console.log("Time between each release: ", schedule[4]/(30*24*3600) + " Months");
+    console.log("Revocable: ", schedule[5]);
+    console.log("Total amount: "+ schedule[6]/1e18 + " DOGZ");
+    console.log("Released: "+ schedule[7]/1e18 + " DOGZ");
+    console.log("Revoked: ", schedule[8]);
+  }
 
-            let initialTime = new Date( result[1] * 1000);
-            console.log("["+i+"] " + "Initial vesting period: ", initialTime.toLocaleString())
+};
 
-            console.log("["+i+"] " + "Vesting duration: ", result[3]/(30*24*3600) + " Months")
-            console.log("["+i+"] " + "Time between each release: ", result[4]/(30*24*3600) + " Months")
-            console.log("["+i+"] " + "Revocable: ", result[5])
-            console.log("["+i+"] " + "Total amount: "+ result[6]/1e18 + " DOGZ")
-            console.log("["+i+"] " + "Released: "+ result[7]/1e18 + " DOGZ")
-            console.log("["+i+"] " + "Revoked: ", result[8])
-
-          })
-        })
-      }
-    })
-  })
-})
+readVestingContract();
