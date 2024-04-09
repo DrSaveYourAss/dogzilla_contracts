@@ -2,8 +2,20 @@
 
 ![DogZilla](./img/icon.jpeg)
 
-## Contracts
+## Setup
 
+Prerequisites:
+* Git
+* Node
+* NPM
+
+To install NPM dependencies:
+
+```
+npm install
+```
+
+## Contracts 
 ### Token vesting
 
 Cliff token vesting contract is taken form [AbdelStark](https://github.com/AbdelStark/token-vesting-contracts). 
