@@ -30,7 +30,6 @@ contract DogNFT is ERC721URIStorage, Ownable{
     }
 
     function numberOfNfts (address nftOwner) public view virtual returns (uint256) {
-        require(msg.sender == nftOwner, "You must be owner to see how much NFTs you own!");
 
         uint256 items;
         for (uint256 i = 0; i<numberOfEditions(); i++) 
@@ -42,7 +41,6 @@ contract DogNFT is ERC721URIStorage, Ownable{
     }
 
     function ownerOfNfts(address nftOwner) public view virtual returns (uint256 [] memory) {
-        require(msg.sender == nftOwner, "You must be owner to see how much NFTs you own!");
 
         uint256 numberOfItems = numberOfNfts(nftOwner);
         uint256 counter       = 0;
