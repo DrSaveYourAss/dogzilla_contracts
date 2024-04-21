@@ -10,6 +10,7 @@ contract DogNFT is ERC721URIStorage, Ownable{
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
+
     constructor() ERC721("DogZilla VIP Pass", "DOGZ") {}
 
     function addEdition(address owner, string memory tokenURI)
@@ -22,6 +23,32 @@ contract DogNFT is ERC721URIStorage, Ownable{
 
         _tokenIds.increment();
         return newItemId;
+    }
+
+    function numberOfEditions() public view returns (uint256) {
+        return _tokenIds.current();
+    }
+
+    function ownerOfNfts(address nftOwner) public view virtual returns (uint256 [] memory) {
+        require(msg.sender == nftOwner, "You must be owner to see how much NFTs you own!");
+        uint256 numberOfItems = 0;
+        uint256 counter       = 0;
+
+        for (uint256 i = 0; i<numberOfEditions(); i++) 
+        {
+            if(nftOwner == ownerOf(i))   
+                numberOfItems++;
+        }
+
+        uint256 [] memory ids = new uint256[](numberOfItems);
+        for (uint256 i = 0; i<numberOfEditions(); i++) 
+        {
+            if(nftOwner == ownerOf(i)) {
+                ids[counter] = i;
+                counter++;
+            }               
+        }
+        return ids;
     }
 
     function burn(uint256 tokenId) public virtual {
