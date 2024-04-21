@@ -29,16 +29,23 @@ contract DogNFT is ERC721URIStorage, Ownable{
         return _tokenIds.current();
     }
 
-    function ownerOfNfts(address nftOwner) public view virtual returns (uint256 [] memory) {
+    function numberOfNfts (address nftOwner) public view virtual returns (uint256) {
         require(msg.sender == nftOwner, "You must be owner to see how much NFTs you own!");
-        uint256 numberOfItems = 0;
-        uint256 counter       = 0;
 
+        uint256 items;
         for (uint256 i = 0; i<numberOfEditions(); i++) 
         {
             if(nftOwner == ownerOf(i))   
-                numberOfItems++;
+                items++;
         }
+        return items;
+    }
+
+    function ownerOfNfts(address nftOwner) public view virtual returns (uint256 [] memory) {
+        require(msg.sender == nftOwner, "You must be owner to see how much NFTs you own!");
+
+        uint256 numberOfItems = numberOfNfts(nftOwner);
+        uint256 counter       = 0;
 
         uint256 [] memory ids = new uint256[](numberOfItems);
         for (uint256 i = 0; i<numberOfEditions(); i++) 
