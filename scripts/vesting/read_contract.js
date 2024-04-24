@@ -1,4 +1,4 @@
-const Web3 = require('web3')
+const { Web3 } = require('web3')
 const web3 = new Web3('https://eth-rpc-api.thetatoken.org/rpc')
 const chainID = 361 // for the Theta Mainnet
 
@@ -43,7 +43,7 @@ const readVestingContract = async () => {
   const count = await vestCount;
 
   console.log("Associated token address:", token);
-  console.log("Vesting total amount: " + total/1e18 + " DOGZ");
+  console.log("Vesting total amount: " + (total/BigInt(1e18)).toLocaleString() + " DOGZ");
   console.log("Vesting count:",count);
 
   for (let i = 0; i < count; i++) {
@@ -51,7 +51,7 @@ const readVestingContract = async () => {
     const id         = await contract.methods.getVestingIdAtIndex(i).call((err, result) => {return result;});
     const releasable = await contract.methods.computeReleasableAmount(id).call((err, result) => {return result;});
     const schedule   = await contract.methods.getVestingSchedule(id).call((err, result) => { return result });
-    let initialTime  = new Date( schedule[1] * 1000);
+    let initialTime  = new Date(Number(BigInt(schedule[1])) * Number(BigInt(1000)));
 
     console.log("")
     console.log("==========================================================================")
@@ -59,14 +59,14 @@ const readVestingContract = async () => {
     console.log("==========================================================================")
     console.log("")
     console.log("Vesting ID:", id);
-    console.log("Vesting releasable amount: " + releasable/1e18+ " DOGZ");
+    console.log("Vesting releasable amount: " + (releasable/BigInt(1e18)).toLocaleString() + " DOGZ");
     console.log("Beneficiary: ",schedule[0]);
     console.log("Initial vesting period: ", initialTime.toLocaleString());
-    console.log("Vesting duration: ", schedule[3]/(30*24*3600) + " Months");
-    console.log("Time between each release: ", schedule[4]/(30*24*3600) + " Months");
+    console.log("Vesting duration: ", (schedule[3]/BigInt((30*24*3600))) + " Months");
+    console.log("Time between each release: ", (schedule[4]/BigInt((30*24*3600))) + " Months");
     console.log("Revocable: ", schedule[5]);
-    console.log("Total amount: "+ schedule[6]/1e18 + " DOGZ");
-    console.log("Released: "+ schedule[7]/1e18 + " DOGZ");
+    console.log("Total amount: "+ (schedule[6]/BigInt(1e18)).toLocaleString() + " DOGZ");
+    console.log("Released: "+ (schedule[7]/BigInt(1e18)).toLocaleString() + " DOGZ");
     console.log("Revoked: ", schedule[8]);
   }
 
